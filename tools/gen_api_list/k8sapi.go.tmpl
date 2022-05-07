@@ -1,0 +1,64 @@
+package k8sapi
+
+import (
+	"errors"
+	"reflect"
+	{{ "" }}
+
+{{- range $key, $value := . }}
+  	{{ $key }} "{{ $value }}"
+{{- end }}
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
+
+type API struct {
+	GroupVersion schema.GroupVersion
+	Kind         string
+	Obj          runtime.Object
+}
+
+var sc = runtime.NewScheme()
+var apis []API
+
+func List() ([]API, error) {
+	return list()
+}
+
+func list() ([]API, error) {
+	if len(apis) > 0 {
+		return apis, nil
+	}
+	if len(sc.AllKnownTypes()) == 0 {
+		if err := addApis(); err != nil {
+			return nil, err
+		}
+	}
+
+	apis = make([]API, 0)
+	for k, v := range sc.AllKnownTypes() {
+		if k.Version == "__internal" {
+			continue
+		}
+		o, ok := reflect.New(v).Interface().(runtime.Object)
+		if !ok {
+			return nil, errors.New("failed to get apis")
+		}
+		apis = append(apis, API{
+			GroupVersion: k.GroupVersion(),
+			Kind:         k.Kind,
+			Obj:          o,
+		})
+	}
+
+	return apis, nil
+}
+
+func addApis() error {
+	{{- range $key, $value := . }}
+	if err := {{ $key }}.AddToScheme(sc); err != nil {
+		return err
+	}
+	{{- end }}
+	return nil
+}
