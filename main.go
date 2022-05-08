@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/x-color/k8guard/k8sapi"
@@ -93,7 +94,28 @@ func generatePolicies() (map[string]policies, error) {
 			ps[removedPolicy.k8sVersion] = append(ps[removedPolicy.k8sVersion], *removedPolicy)
 		}
 	}
-	return ps, nil
+	return sortPolicies(ps), nil
+}
+
+func sortPolicies(ps map[string]policies) map[string]policies {
+	sorted := make(map[string]policies)
+	for v, pl := range ps {
+		sort.Slice(pl, func(i, j int) bool {
+			if pl[i].level != pl[j].level {
+				return pl[i].level < pl[j].level
+			}
+			if pl[i].groupVersion != pl[j].groupVersion {
+				return pl[i].groupVersion < pl[j].groupVersion
+			}
+			return pl[i].kind < pl[j].kind
+		})
+		sorted[v] = pl
+		for _, p := range pl {
+			fmt.Println(p.level, p.groupVersion, p.kind)
+		}
+		fmt.Println()
+	}
+	return sorted
 }
 
 func generateDeprecatedPolicy(api k8sapi.API) *policy {
@@ -150,6 +172,6 @@ func k8sVersion(major, minor int) string {
 
 func generatePolicyFile(filename, content string) error {
 	head := "package main"
-	body := fmt.Sprintf("%s\n\n%s", head, content)
+	body := fmt.Sprintf("%s\n\n%s\n", head, content)
 	return os.WriteFile(filename, []byte(body), 0644)
 }
