@@ -31,7 +31,7 @@ networking.k8s.io/v1beta1 Ingress is removed in 1.22+. use networking.k8s.io/v1 
 
 If you use the policies with conftest
 
-```console
+```shell
 # Pull policies from the repository to detect deprecated apis in specific  k8s  version that you want to check.
 # You should pull policies for versions under the k8s version.
 # (e.g. You pull 1_2 ~ 1.22 if you want to check the apis for k8s 1.22)
