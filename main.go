@@ -110,10 +110,6 @@ func sortPolicies(ps map[string]policies) map[string]policies {
 			return pl[i].kind < pl[j].kind
 		})
 		sorted[v] = pl
-		for _, p := range pl {
-			fmt.Println(p.level, p.groupVersion, p.kind)
-		}
-		fmt.Println()
 	}
 	return sorted
 }
