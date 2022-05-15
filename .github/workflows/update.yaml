@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update_k8sapi:
+  update_k8sapi_and_policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,6 +31,7 @@ jobs:
           git diff --cached --quiet || git commit -m "Update policy file"
       - name: Push changes
         run: |
-          if [[ `git rev-parse HEAD` == `git rev-parse origin/main` ]]; then
+          if [[ `git rev-parse HEAD` != `git rev-parse origin/main` ]]; then
+            echo "Some changes exist. Push them"
             git push origin main
           fi
