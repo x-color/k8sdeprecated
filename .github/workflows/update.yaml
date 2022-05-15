@@ -14,7 +14,7 @@ jobs:
         with:
           go-version: 1.18
       - name: Update k8sapi package
-        run: go run tools/gen_api_list.go
+        run: go run tools/gen_api_list/gen_api_list.go
       - name: Set up Git configuration
         run: |
           git config --local user.email "36035885+x-color@users.noreply.github.com"
