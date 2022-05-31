@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/x-color/k8guard/k8sapi"
+	"github.com/x-color/k8deprecated/k8sapi"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 

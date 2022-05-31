@@ -1,4 +1,4 @@
-module github.com/x-color/k8guard
+module github.com/x-color/k8deprecated
 
 go 1.18
 
