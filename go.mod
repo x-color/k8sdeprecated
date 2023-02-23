@@ -1,6 +1,6 @@
 module github.com/x-color/k8deprecated
 
-go 1.18
+go 1.20
 
 require k8s.io/api v0.23.6
 
